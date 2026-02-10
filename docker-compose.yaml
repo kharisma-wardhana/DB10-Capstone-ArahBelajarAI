@@ -1,0 +1,56 @@
+service:
+  chromadb:
+    container_name: chromadb
+    image: chromadb/chroma:1.5.0
+    ports:
+      - "8001:8000"
+    volumes:
+      - chromadb_data:/data
+    environment:
+      - PERSISTENCE_DIRECTORY=/chroma
+      - ANONYMIZED_TELEMETRY=FALSE
+    networks:
+      - arahbelajarai-net
+
+  be-arahbelajarai:
+    container_name: be-arahbelajarai
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - chromadb
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: >
+      sh -c "uvicorn main:app --host 0.0.0.0 --port 8000"
+    networks:
+      - arahbelajarai-net
+
+  fe-arahbelajarai:
+    container_name: fe-arahbelajarai
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: >
+      sh -c "npm install && npm start"
+    depends_on:
+      - be-arahbelajarai
+    networks:
+      - arahbelajarai-net
+
+volumes:
+  chromadb_data:
+
+networks:
+  arahbelajarai-net:
+    driver: bridge
