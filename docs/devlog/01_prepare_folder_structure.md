@@ -23,25 +23,25 @@ Document ini mencatat step by step proses persiapan struktur folder untuk proyek
 - Prepare init frontend nextjs 16
 - [x] Inisialisasi proyek nextjs 16 di dalam folder `frontend/`
 - [/] Menambahkan dependensi dasar yang diperlukan untuk pengembangan frontend
-- [ ] Menambahkan file .env.example untuk konfigurasi lingkungan
-- [ ] Menambahkan subfolder `components/` di dalam folder `frontend/` untuk menyimpan komponen UI
-- [ ] Menambahkan subfolder `lib/` di dalam folder `frontend/` untuk menyimpan utilitas dan helper functions
-- [ ] Menambahkan file README.md di dalam folder `frontend/` untuk deskripsi terkait frontend
+- [x] Menambahkan file .env.example untuk konfigurasi lingkungan
+- [x] Menambahkan subfolder `components/` di dalam folder `frontend/` untuk menyimpan komponen UI
+- [x] Menambahkan subfolder `lib/` di dalam folder `frontend/` untuk menyimpan utilitas dan helper functions
+- [x] Menambahkan file README.md di dalam folder `frontend/` untuk deskripsi terkait frontend
 
 - Prepare init backend fastapi
 - [x] Inisialisasi proyek fastapi di dalam folder `backend/`
-- [ ] Menambahkan dependensi dasar yang diperlukan untuk pengembangan backend dengan file requirements.txt
-- [ ] Menambakan file .env.example untuk konfigurasi lingkungan
-- [ ] Menambahkan subfolder `app/` di dalam folder `backend/` untuk menyimpan kode aplikasi backend
-- [ ] Membuat file main.py sebagai titik masuk aplikasi backend
-- [ ] Menambahkan subfolder `app/routes/` di dalam folder `backend/` untuk menyimpan route API
-- [ ] Menambahkan subfolder `app/models/` di dalam folder `backend/` untuk menyimpan model data
-- [ ] Menambahkan subfolder `app/services/` di dalam folder `backend/` untuk menyimpan bisnis logic
-- [ ] Menambahkan file README.md di dalam folder `backend/` untuk deskripsi terkait backend
+- [/] Menambahkan dependensi dasar yang diperlukan untuk pengembangan backend dengan file requirements.txt
+- [x] Menambakan file .env.example untuk konfigurasi lingkungan
+- [x] Menambahkan subfolder `app/` di dalam folder `backend/` untuk menyimpan kode aplikasi backend
+- [x] Membuat file main.py sebagai titik masuk aplikasi backend
+- [x] Menambahkan subfolder `app/routes/` di dalam folder `backend/` untuk menyimpan route API
+- [x] Menambahkan subfolder `app/models/` di dalam folder `backend/` untuk menyimpan model data
+- [x] Menambahkan subfolder `app/services/` di dalam folder `backend/` untuk menyimpan bisnis logic
+- [x] Menambahkan file README.md di dalam folder `backend/` untuk deskripsi terkait backend
 
 - Prepare init ml folder
-- [ ] Menyiapkan struktur dasar untuk menyimpan model machine learning dan dataset di dalam folder `ml/`
-- [ ] Menambahkan dependensi dasar yang diperlukan untuk pengembangan model machine learning
-- [ ] Menambahkan subfolder `models/` di dalam folder `ml/` untuk menyimpan model yang telah dilatih
-- [ ] Menambahkan subfolder `data/` di dalam folder `ml/` untuk menyimpan dataset yang digunakan
-- [ ] Menambahkan file README.md di dalam folder `ml/` untuk deskripsi terkait model dan data
+- [x] Menyiapkan struktur dasar untuk menyimpan model machine learning dan dataset di dalam folder `ml/`
+- [x] Menambahkan dependensi dasar yang diperlukan untuk pengembangan model machine learning
+- [x] Menambahkan subfolder `models/` di dalam folder `ml/` untuk menyimpan model yang telah dilatih
+- [x] Menambahkan subfolder `data/` di dalam folder `ml/` untuk menyimpan dataset yang digunakan
+- [x] Menambahkan file README.md di dalam folder `ml/` untuk deskripsi terkait model dan data
