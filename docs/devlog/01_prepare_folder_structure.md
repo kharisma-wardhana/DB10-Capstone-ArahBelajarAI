@@ -1,6 +1,6 @@
 ---
 Writer: Kharisma Wardhana
-Date: 2024-06-15
+Date: 2026-02-10
 Title: "🛠️ Devlog: ArahBelajarAI - Persiapan Struktur Folder"
 ---
 
