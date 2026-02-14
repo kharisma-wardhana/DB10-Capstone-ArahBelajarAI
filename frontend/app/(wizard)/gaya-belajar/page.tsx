@@ -9,6 +9,8 @@ import { VAK_QUESTIONS } from "@/features/vak-quiz/data/vak-questions";
 import { calculateVakResult } from "@/features/vak-quiz/lib/vak-scoring";
 import { VakQuestionCard } from "@/features/vak-quiz/components/vak-question-card";
 import { VakResultCard } from "@/features/vak-quiz/components/vak-result-card";
+import { PageTransition } from "@/shared/components/layout/page-transition";
+import { motion } from "framer-motion";
 
 export default function GayaBelajarPage() {
   const router = useRouter();
@@ -54,64 +56,86 @@ export default function GayaBelajarPage() {
   if (showResult && (vakResult || allAnswered)) {
     const result = vakResult || calculateVakResult(answers);
     return (
-      <div className="space-y-6">
-        <VakResultCard result={result} />
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={handleRetake}
-            className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20 cursor-pointer"
-          >
-            Ulangi Quiz
-          </Button>
-          <Button
-            onClick={handleContinue}
-            className="flex-1 bg-white text-indigo-700 hover:bg-white/90 font-semibold cursor-pointer"
-          >
-            Lanjut
-          </Button>
+      <PageTransition>
+        <div className="space-y-6">
+          <VakResultCard result={result} />
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={handleRetake}
+              className="flex-1 bg-brand-card border-brand-card-border text-brand-text hover:bg-brand-card-hover cursor-pointer"
+            >
+              Ulangi Quiz
+            </Button>
+            <motion.div className="flex-1" whileTap={{ scale: 0.97 }}>
+              <Button
+                onClick={handleContinue}
+                className="w-full bg-brand-cta-bg text-brand-cta-text hover:bg-brand-cta-hover font-semibold cursor-pointer"
+              >
+                Lanjut
+              </Button>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
   // Show quiz
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-white text-2xl font-bold mb-1">
-          Quiz Gaya Belajar
-        </h2>
-        <p className="text-white/60 text-sm">
-          Jawab 6 pertanyaan untuk mengetahui gaya belajar terbaikmu
-        </p>
-      </div>
+    <PageTransition>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-brand-text text-2xl font-bold mb-1">
+            Quiz Gaya Belajar
+          </h2>
+          <p className="text-brand-text-muted text-sm">
+            Jawab 6 pertanyaan untuk mengetahui gaya belajar terbaikmu
+          </p>
+        </div>
 
-      <VakQuestionCard
-        question={VAK_QUESTIONS[currentQ]}
-        selectedAnswer={answers[currentQ]}
-        onAnswer={handleAnswer}
-        questionIndex={currentQ}
-        totalQuestions={totalQuestions}
-      />
+        {/* Progress bar */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1 h-1.5 rounded-full bg-brand-card-border overflow-hidden">
+            <motion.div
+              className="h-full rounded-full bg-brand-primary-light"
+              animate={{ width: `${((currentQ + (answers[currentQ] ? 1 : 0)) / totalQuestions) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+          <span className="text-brand-text-muted text-xs">
+            {currentQ + 1}/{totalQuestions}
+          </span>
+        </div>
 
-      <div className="flex gap-3">
-        <Button
-          variant="outline"
-          onClick={handlePrev}
-          disabled={currentQ === 0}
-          className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20 disabled:opacity-30 cursor-pointer"
-        >
-          Kembali
-        </Button>
-        <Button
-          onClick={handleNext}
-          disabled={!answers[currentQ]}
-          className="flex-1 bg-white text-indigo-700 hover:bg-white/90 font-semibold disabled:opacity-30 cursor-pointer"
-        >
-          {isLastQuestion && allAnswered ? "Lihat Hasil" : "Selanjutnya"}
-        </Button>
+        <VakQuestionCard
+          question={VAK_QUESTIONS[currentQ]}
+          selectedAnswer={answers[currentQ]}
+          onAnswer={handleAnswer}
+          questionIndex={currentQ}
+          totalQuestions={totalQuestions}
+        />
+
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            onClick={handlePrev}
+            disabled={currentQ === 0}
+            className="flex-1 bg-brand-card border-brand-card-border text-brand-text hover:bg-brand-card-hover disabled:opacity-30 cursor-pointer"
+          >
+            Kembali
+          </Button>
+          <motion.div className="flex-1" whileTap={{ scale: 0.97 }}>
+            <Button
+              onClick={handleNext}
+              disabled={!answers[currentQ]}
+              className="w-full bg-brand-cta-bg text-brand-cta-text hover:bg-brand-cta-hover font-semibold disabled:opacity-30 cursor-pointer"
+            >
+              {isLastQuestion && allAnswered ? "Lihat Hasil" : "Selanjutnya"}
+            </Button>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

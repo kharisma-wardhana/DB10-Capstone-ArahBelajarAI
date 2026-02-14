@@ -16,7 +16,7 @@ export function ChatInput({
   disabled,
   questionNumber,
   totalQuestions,
-}: ChatInputProps) {
+}: Readonly<ChatInputProps>) {
   const [input, setInput] = useState("");
 
   function handleSend() {
@@ -34,8 +34,8 @@ export function ChatInput({
   }
 
   return (
-    <div className="border-t border-white/10 bg-white/5 p-3">
-      <div className="text-white/40 text-xs mb-2 text-center">
+    <div className="border-t border-brand-card-border bg-brand-card/50 p-3">
+      <div className="text-brand-text-muted text-xs mb-2 text-center">
         Pertanyaan {Math.min(questionNumber + 1, totalQuestions)} dari{" "}
         {totalQuestions}
       </div>
@@ -49,13 +49,13 @@ export function ChatInput({
           }
           disabled={disabled}
           rows={2}
-          className="flex-1 bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-sm placeholder:text-white/30 resize-none focus:outline-none focus:border-white/40 disabled:opacity-40"
+          className="flex-1 bg-brand-card border border-brand-card-border rounded-xl px-3 py-2 text-brand-text text-sm placeholder:text-brand-text-muted resize-none focus:outline-none focus:border-brand-primary-light/40 disabled:opacity-40"
         />
         <Button
           onClick={handleSend}
           disabled={disabled || !input.trim()}
           size="icon"
-          className="bg-indigo-500 hover:bg-indigo-600 text-white self-end disabled:opacity-30 cursor-pointer"
+          className="bg-brand-primary hover:bg-brand-primary-light text-white self-end disabled:opacity-30 cursor-pointer"
         >
           <Send className="w-4 h-4" />
         </Button>

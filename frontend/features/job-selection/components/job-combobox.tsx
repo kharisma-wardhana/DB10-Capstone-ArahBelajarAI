@@ -19,7 +19,7 @@ interface JobComboboxProps {
   onSelect: (title: string) => void;
 }
 
-export function JobCombobox({ selectedJob, onSelect }: JobComboboxProps) {
+export function JobCombobox({ selectedJob, onSelect }: Readonly<JobComboboxProps>) {
   const [allJobs, setAllJobs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -40,14 +40,14 @@ export function JobCombobox({ selectedJob, onSelect }: JobComboboxProps) {
   }, []);
 
   return (
-    <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl overflow-hidden">
+    <div className="backdrop-blur-xl bg-brand-card border border-brand-card-border rounded-xl overflow-hidden">
       <Command className="bg-transparent">
         <CommandInput
           placeholder={loading ? "Memuat daftar pekerjaan..." : "Cari pekerjaan lain..."}
-          className="text-white placeholder:text-white/40"
+          className="text-brand-text placeholder:text-brand-text-muted"
         />
         <CommandList className="max-h-48">
-          <CommandEmpty className="text-white/50 text-sm py-4 text-center">
+          <CommandEmpty className="text-brand-text-muted text-sm py-4 text-center">
             Pekerjaan tidak ditemukan
           </CommandEmpty>
           <CommandGroup>
@@ -56,8 +56,8 @@ export function JobCombobox({ selectedJob, onSelect }: JobComboboxProps) {
                 key={job}
                 value={job}
                 onSelect={() => onSelect(job)}
-                className={`cursor-pointer text-white/80 ${
-                  selectedJob === job ? "bg-white/20 text-white" : ""
+                className={`cursor-pointer text-brand-text/80 ${
+                  selectedJob === job ? "bg-brand-card-hover text-brand-text" : ""
                 }`}
               >
                 {job}

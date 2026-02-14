@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useWizardStore } from "@/shared/store/wizard-store";
 import { apiRequest } from "@/shared/api/client";
 import { API } from "@/shared/api/endpoints";
@@ -11,6 +10,9 @@ import type { InterviewStartResponse, SSEDoneEvent } from "@/shared/api/types";
 import { streamInterviewChat } from "@/features/interview/lib/sse-client";
 import { ChatMessage } from "@/features/interview/components/chat-message";
 import { ChatInput } from "@/features/interview/components/chat-input";
+import { AnimatedSkeleton } from "@/shared/components/ui/animated-skeleton";
+import { ThemeToggle } from "@/shared/components/theme-toggle";
+import { motion } from "framer-motion";
 
 export default function InterviewPage() {
   const router = useRouter();
@@ -73,9 +75,7 @@ export default function InterviewPage() {
   async function handleSend(message: string) {
     if (!interview.sessionId || streaming) return;
 
-    // Add user message
     appendMessage({ role: "user", content: message });
-    // Add empty assistant message for streaming
     appendMessage({ role: "assistant", content: "" });
 
     setStreaming(true);
@@ -103,35 +103,52 @@ export default function InterviewPage() {
 
   if (initializing) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full space-y-4">
-          <Skeleton className="h-12 w-3/4 bg-white/10 rounded-xl" />
-          <Skeleton className="h-24 w-full bg-white/10 rounded-xl" />
-          <Skeleton className="h-8 w-1/2 bg-white/10 rounded-xl" />
+      <div className="min-h-screen bg-linear-to-br from-brand-gradient-start to-brand-gradient-end flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full">
+          <AnimatedSkeleton blocks={["h-12", "h-24", "h-8"]} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 flex flex-col">
+    <div className="min-h-screen bg-linear-to-br from-brand-gradient-start to-brand-gradient-end flex flex-col">
       {/* Header */}
-      <div className="sticky top-0 z-10 backdrop-blur-xl bg-white/10 border-b border-white/20 px-4 py-3">
+      <div className="sticky top-0 z-10 pt-safe backdrop-blur-xl bg-brand-card border-b border-brand-card-border px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <h2 className="text-white font-semibold text-sm">
+            <h2 className="text-brand-text font-semibold text-sm">
               Mock Interview
             </h2>
-            <p className="text-white/50 text-xs">{interview.jobRole}</p>
+            <p className="text-brand-text-muted text-xs">{interview.jobRole}</p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.push("/hasil-analisis")}
-            className="bg-white/10 border-white/20 text-white hover:bg-white/20 text-xs cursor-pointer"
-          >
-            Kembali
-          </Button>
+          <div className="flex items-center gap-2">
+            {/* Question progress dots */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              {Array.from({ length: 5 }, (_, i) => (
+                <div
+                  key={i}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    i < interview.questionNumber
+                      ? "bg-brand-secondary"
+                      : "bg-brand-card-border"
+                  }`}
+                />
+              ))}
+              <span className="text-brand-text-muted text-xs ml-1">
+                {interview.questionNumber}/5
+              </span>
+            </div>
+            <ThemeToggle />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/hasil-analisis")}
+              className="bg-brand-card border-brand-card-border text-brand-text hover:bg-brand-card-hover text-xs cursor-pointer"
+            >
+              Kembali
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -139,7 +156,11 @@ export default function InterviewPage() {
       <div className="flex-1 overflow-y-auto px-4 py-4">
         <div className="max-w-2xl mx-auto space-y-4">
           {interview.messages.map((msg, i) => (
-            <ChatMessage key={i} message={msg} />
+            <ChatMessage
+              key={i}
+              message={msg}
+              isStreaming={streaming && i === interview.messages.length - 1 && msg.role === "assistant"}
+            />
           ))}
           <div ref={messagesEndRef} />
         </div>
@@ -155,19 +176,23 @@ export default function InterviewPage() {
       )}
 
       {/* Input or Completion */}
-      <div className="max-w-2xl mx-auto w-full">
+      <div className="max-w-2xl mx-auto w-full pb-safe">
         {interview.isComplete ? (
-          <div className="p-4 text-center space-y-3">
-            <p className="text-white/80 text-sm">
+          <motion.div
+            className="p-4 text-center space-y-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <p className="text-brand-text/80 text-sm">
               Interview selesai! Lihat feedback dan evaluasi kamu.
             </p>
             <Button
               onClick={() => router.push("/interview/feedback")}
-              className="bg-white text-indigo-700 hover:bg-white/90 font-semibold cursor-pointer"
+              className="bg-brand-cta-bg text-brand-cta-text hover:bg-brand-cta-hover font-semibold cursor-pointer"
             >
               Lihat Feedback
             </Button>
-          </div>
+          </motion.div>
         ) : (
           <ChatInput
             onSend={handleSend}

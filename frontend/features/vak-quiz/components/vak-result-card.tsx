@@ -3,12 +3,13 @@
 import type { VakResult } from "@/shared/store/wizard-store";
 import { VAK_TIPS } from "../data/vak-questions";
 import { Progress } from "@/components/ui/progress";
+import { motion } from "framer-motion";
 
 interface VakResultCardProps {
   result: VakResult;
 }
 
-export function VakResultCard({ result }: VakResultCardProps) {
+export function VakResultCard({ result }: Readonly<VakResultCardProps>) {
   const tipData = VAK_TIPS[result.dominant];
   const total = result.scores.visual + result.scores.auditory + result.scores.kinesthetic;
 
@@ -19,14 +20,19 @@ export function VakResultCard({ result }: VakResultCardProps) {
   };
 
   return (
-    <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 shadow-lg space-y-6">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4 }}
+      className="backdrop-blur-xl bg-brand-card border border-brand-card-border rounded-2xl p-6 shadow-lg space-y-6"
+    >
       {/* Dominant Style */}
       <div className="text-center">
         <div className="text-4xl mb-2">{tipData.emoji}</div>
-        <h3 className="text-white text-xl font-bold mb-1">
+        <h3 className="text-brand-text text-xl font-bold mb-1">
           Gaya Belajar Kamu: {tipData.label}
         </h3>
-        <p className="text-white/60 text-sm">
+        <p className="text-brand-text-muted text-sm">
           Berdasarkan jawabanmu, kamu cenderung belajar paling efektif dengan
           gaya {tipData.label.toLowerCase()}.
         </p>
@@ -39,14 +45,14 @@ export function VakResultCard({ result }: VakResultCardProps) {
           return (
             <div key={style} className="space-y-1">
               <div className="flex justify-between text-sm">
-                <span className="text-white/80">
+                <span className="text-brand-text/80">
                   {info.emoji} {info.label}
                 </span>
-                <span className="text-white/60">{percentages[style]}%</span>
+                <span className="text-brand-text-muted">{percentages[style]}%</span>
               </div>
               <Progress
                 value={percentages[style]}
-                className="h-2 bg-white/10"
+                className="h-2 bg-brand-card-border"
               />
             </div>
           );
@@ -55,21 +61,21 @@ export function VakResultCard({ result }: VakResultCardProps) {
 
       {/* Tips */}
       <div>
-        <h4 className="text-white font-semibold text-sm mb-3">
+        <h4 className="text-brand-text font-semibold text-sm mb-3">
           Tips Belajar untuk Kamu:
         </h4>
         <ul className="space-y-2">
           {tipData.tips.map((tip) => (
             <li
               key={tip}
-              className="flex items-start gap-2 text-white/80 text-sm"
+              className="flex items-start gap-2 text-brand-text/80 text-sm"
             >
-              <span className="text-green-400 mt-0.5">&#10003;</span>
+              <span className="text-brand-secondary mt-0.5">&#10003;</span>
               {tip}
             </li>
           ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
   );
 }

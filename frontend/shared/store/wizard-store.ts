@@ -61,6 +61,9 @@ interface WizardStore {
   completeStep: (step: number) => void;
   isStepAccessible: (step: number) => boolean;
 
+  // Progress
+  hasProgress: () => boolean;
+
   // Reset
   resetAll: () => void;
 }
@@ -120,6 +123,8 @@ export const useWizardStore = create<WizardStore>()(
         if (step === 1) return true;
         return get().completedSteps.includes(step - 1);
       },
+
+      hasProgress: () => get().completedSteps.length > 0,
 
       resetAll: () =>
         set({

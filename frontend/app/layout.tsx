@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "@/shared/components/theme-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,11 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "ArahBelajarAI",
-  description:
-    "Identifikasi skill gap dan persiapkan karir impianmu dengan AI",
+  description: "Identifikasi skill gap dan persiapkan karir impianmu dengan AI",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "ArahBelajar",
   },
 };
@@ -27,7 +27,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#4f46e5",
+  viewportFit: "cover",
+  themeColor: "#3B5EDB",
 };
 
 export default function RootLayout({
@@ -36,11 +37,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("arahbelajar-theme")||"system";var d=t==="system"?window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light":t;if(d==="dark")document.documentElement.classList.add("dark")}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
