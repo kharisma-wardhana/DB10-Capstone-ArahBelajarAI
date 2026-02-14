@@ -19,7 +19,7 @@ export function WizardShell({ children }: { children: React.ReactNode }) {
   const currentStepIndex = STEPS.findIndex((s) => s.path === pathname);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
+    <div className="min-h-screen bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700">
       {/* Step Indicator */}
       <div className="sticky top-0 z-10 backdrop-blur-xl bg-white/10 border-b border-white/20">
         <div className="max-w-2xl mx-auto px-4 py-3">
