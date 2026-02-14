@@ -137,6 +137,8 @@ class SkillGapAnalyzer:
         # Load embeddings for similarity computation
         emb_path = embeddings_path or str(SKILL_EMBEDDINGS_PATH)
         emb_df = pd.read_parquet(emb_path)
+        if "skill" not in emb_df.columns:
+            emb_df.insert(0, "skill", tax_df["skill_name"].values)
         skill_col = "skill"
         emb_cols = [c for c in emb_df.columns if c != skill_col]
         self._skill_vectors: dict[str, np.ndarray] = {

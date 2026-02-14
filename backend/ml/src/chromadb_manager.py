@@ -66,6 +66,10 @@ def populate_skill_collection(
     taxonomy_df = pd.read_parquet(tax_path)
     embeddings_df = pd.read_parquet(emb_path)
 
+    # Ensure embeddings have a skill name column (aligned by index with taxonomy)
+    if "skill" not in embeddings_df.columns:
+        embeddings_df.insert(0, "skill", taxonomy_df["skill_name"].values)
+
     # Build embedding lookup
     skill_col = "skill"
     emb_cols = [c for c in embeddings_df.columns if c != skill_col]
