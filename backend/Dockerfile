@@ -23,13 +23,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-COPY pyproject.toml ./
+COPY requirements.txt ./
 RUN pip install --upgrade pip setuptools wheel && \
-    pip install -e ".[dev]"
-
-# Download spaCy models
-RUN python -m spacy download en_core_web_md && \
-    python -m spacy download xx_ent_wiki_sm
+    pip install -r requirements.txt
 
 # Copy application code
 COPY . .
