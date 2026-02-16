@@ -25,6 +25,8 @@ class MLRegistry:
 
     def initialize(self, chroma_host: str, chroma_port: int, model_name: str) -> None:
         """Load all models and initialize ChromaDB collections."""
+        print("Initializing MLRegistry...")
+        print(f"Connecting to ChromaDB at {chroma_host}:{chroma_port}...")
         self.chroma_client = get_chroma_client(host=chroma_host, port=chroma_port)
         self.embedding_model = SentenceTransformer(model_name)
 

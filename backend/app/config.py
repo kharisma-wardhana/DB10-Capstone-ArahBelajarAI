@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: list[str] = ["http://localhost:3000"]
 
     # ChromaDB
-    CHROMA_HOST: str = "localhost"
+    CHROMA_HOST: str = "chromadb"  # matches service name in docker-compose.yaml
     CHROMA_PORT: int = 8001
 
     # OpenAI (for mock interview)

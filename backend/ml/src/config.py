@@ -12,7 +12,7 @@ SKILL_SYNONYMS_PATH = DATA_DIR / "skill_synonyms.json"
 JOB_SKILL_MAPPING_PATH = DATA_DIR / "job_skill_mapping.parquet"
 
 # ---------- ChromaDB ----------
-CHROMA_HOST = "localhost"
+CHROMA_HOST = "chromadb"  # matches service name in docker-compose.yaml
 CHROMA_PORT = 8001
 SKILL_COLLECTION_NAME = "skill_taxonomy"
 JOB_TITLE_COLLECTION_NAME = "job_titles"
