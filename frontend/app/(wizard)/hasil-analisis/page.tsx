@@ -50,18 +50,22 @@ export default function HasilAnalisisPage() {
         );
       })
       .finally(() => setLoading(false));
-  }, [gapResult, selectedJobTitle, extractedSkills, setGapResult, completeStep]);
+  }, [
+    gapResult,
+    selectedJobTitle,
+    extractedSkills,
+    setGapResult,
+    completeStep,
+  ]);
 
   if (loading) {
-    return (
-      <AnimatedSkeleton blocks={["h-40", "h-72", "h-20", "h-20"]} />
-    );
+    return <AnimatedSkeleton blocks={["h-40", "h-72", "h-20", "h-20"]} />;
   }
 
   if (error) {
     return (
       <PageTransition>
-        <div className="space-y-4">
+        <div className="space-y-4 px-4 pb-safe">
           <div className="bg-red-500/20 border border-red-500/30 rounded-xl p-4 text-red-300 text-sm">
             {error}
           </div>
@@ -89,9 +93,11 @@ export default function HasilAnalisisPage() {
 
   return (
     <PageTransition>
-      <div className="space-y-5">
+      <div className="space-y-5 p-4 md:p-8 pb-safe">
         <div>
-          <h2 className="text-brand-text text-2xl font-bold mb-1">Hasil Analisis</h2>
+          <h2 className="text-brand-text text-2xl font-bold mb-1">
+            Hasil Analisis
+          </h2>
           <p className="text-brand-text-muted text-sm">
             Skill gap kamu untuk posisi{" "}
             <span className="text-brand-text font-medium">
@@ -124,7 +130,9 @@ export default function HasilAnalisisPage() {
               <div className="text-red-400 text-xl font-bold">
                 {gapResult.missing_skills.length}
               </div>
-              <div className="text-brand-text-muted text-xs">Perlu Dipelajari</div>
+              <div className="text-brand-text-muted text-xs">
+                Perlu Dipelajari
+              </div>
             </div>
             <div>
               <div className="text-brand-primary-light text-xl font-bold">

@@ -32,16 +32,14 @@ export default function InterviewFeedbackPage() {
     )
       .then(setFeedback)
       .catch((err) => {
-        setError(
-          err instanceof Error ? err.message : "Gagal memuat feedback",
-        );
+        setError(err instanceof Error ? err.message : "Gagal memuat feedback");
       })
       .finally(() => setLoading(false));
   }, [interview.sessionId, router]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-brand-gradient-start to-brand-gradient-end p-4">
+      <div className="min-h-screen bg-linear-to-br from-brand-gradient-start to-brand-gradient-end p-4 md:p-8 pb-safe">
         <div className="max-w-2xl mx-auto pt-8">
           <AnimatedSkeleton blocks={["h-32", "h-24", "h-24"]} />
         </div>
@@ -50,7 +48,7 @@ export default function InterviewFeedbackPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-brand-gradient-start to-brand-gradient-end p-4 pb-safe">
+    <div className="min-h-screen bg-linear-to-br from-brand-gradient-start to-brand-gradient-end p-4 md:p-8 pb-safe">
       <div className="max-w-2xl mx-auto py-6 space-y-6">
         <PageTransition>
           <div>

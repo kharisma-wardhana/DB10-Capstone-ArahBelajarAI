@@ -57,7 +57,7 @@ export default function GayaBelajarPage() {
     const result = vakResult || calculateVakResult(answers);
     return (
       <PageTransition>
-        <div className="space-y-6">
+        <div className="space-y-6 p-4 md:p-8 pb-safe">
           <VakResultCard result={result} />
           <div className="flex gap-3">
             <Button
@@ -84,7 +84,7 @@ export default function GayaBelajarPage() {
   // Show quiz
   return (
     <PageTransition>
-      <div className="space-y-6">
+      <div className="space-y-6 p-4 md:p-8 pb-safe">
         <div>
           <h2 className="text-brand-text text-2xl font-bold mb-1">
             Quiz Gaya Belajar
@@ -99,7 +99,9 @@ export default function GayaBelajarPage() {
           <div className="flex-1 h-1.5 rounded-full bg-brand-card-border overflow-hidden">
             <motion.div
               className="h-full rounded-full bg-brand-primary-light"
-              animate={{ width: `${((currentQ + (answers[currentQ] ? 1 : 0)) / totalQuestions) * 100}%` }}
+              animate={{
+                width: `${((currentQ + (answers[currentQ] ? 1 : 0)) / totalQuestions) * 100}%`,
+              }}
               transition={{ duration: 0.3 }}
             />
           </div>

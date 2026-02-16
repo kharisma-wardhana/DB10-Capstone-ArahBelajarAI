@@ -16,15 +16,21 @@ import { AnimatedSkeleton } from "@/shared/components/ui/animated-skeleton";
 import { motion } from "framer-motion";
 
 function getConfidenceBadgeClass(confidence: number) {
-  if (confidence >= 0.7) return "bg-brand-secondary/20 text-brand-secondary border-brand-secondary/30";
-  if (confidence >= 0.5) return "bg-brand-accent/20 text-brand-accent border-brand-accent/30";
+  if (confidence >= 0.7)
+    return "bg-brand-secondary/20 text-brand-secondary border-brand-secondary/30";
+  if (confidence >= 0.5)
+    return "bg-brand-accent/20 text-brand-accent border-brand-accent/30";
   return "bg-brand-card text-brand-text-muted border-brand-card-border";
 }
 
 export default function InputSkillPage() {
   const router = useRouter();
-  const { extractedSkills, setExtractedSkills, setRawSkillInput, completeStep } =
-    useWizardStore();
+  const {
+    extractedSkills,
+    setExtractedSkills,
+    setRawSkillInput,
+    completeStep,
+  } = useWizardStore();
 
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -49,9 +55,7 @@ export default function InputSkillPage() {
       setExtractedSkills(data.skills);
       setExtracted(true);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Gagal mengekstrak skill",
-      );
+      setError(err instanceof Error ? err.message : "Gagal mengekstrak skill");
     } finally {
       setLoading(false);
     }
@@ -72,9 +76,11 @@ export default function InputSkillPage() {
 
   return (
     <PageTransition>
-      <div className="space-y-6">
+      <div className="space-y-6 p-4 md:p-8 pb-safe">
         <div>
-          <h2 className="text-brand-text text-2xl font-bold mb-1">Input Skill</h2>
+          <h2 className="text-brand-text text-2xl font-bold mb-1">
+            Input Skill
+          </h2>
           <p className="text-brand-text-muted text-sm">
             Masukkan skill yang kamu miliki saat ini
           </p>

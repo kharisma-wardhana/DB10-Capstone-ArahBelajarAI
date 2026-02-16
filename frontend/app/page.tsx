@@ -35,7 +35,11 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] as const } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  },
 };
 
 export default function Home() {
@@ -43,8 +47,14 @@ export default function Home() {
   const { hasProgress, completedSteps, currentStep } = useWizardStore();
   const showResume = hasProgress();
 
-  const STEP_PATHS = ["/gaya-belajar", "/pekerjaan-impian", "/input-skill", "/hasil-analisis"];
-  const resumePath = STEP_PATHS[Math.min(currentStep - 1, STEP_PATHS.length - 1)];
+  const STEP_PATHS = [
+    "/gaya-belajar",
+    "/pekerjaan-impian",
+    "/input-skill",
+    "/hasil-analisis",
+  ];
+  const resumePath =
+    STEP_PATHS[Math.min(currentStep - 1, STEP_PATHS.length - 1)];
 
   return (
     <div className="min-h-screen bg-linear-to-br from-brand-gradient-start to-brand-gradient-end flex flex-col items-center justify-center px-4 pb-safe">
@@ -71,12 +81,9 @@ export default function Home() {
 
       {/* Resume Banner */}
       {showResume && (
-        <motion.button
+        <Button
           onClick={() => router.push(resumePath)}
-          className="w-full max-w-md mb-6 backdrop-blur-xl bg-brand-card border border-brand-secondary/30 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-brand-card-hover transition-all"
-          initial={{ opacity: 0, y: -10, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
+          className="w-full max-w-md mb-6 backdrop-blur-xl bg-brand-card border border-brand-secondary/30 rounded-2xl p-8 flex items-center gap-3 cursor-pointer hover:bg-brand-card-hover transition-all"
         >
           <div className="w-10 h-10 rounded-full bg-brand-secondary/20 flex items-center justify-center">
             <ArrowRight className="w-5 h-5 text-brand-secondary" />
@@ -89,7 +96,7 @@ export default function Home() {
               {completedSteps.length} dari 4 langkah selesai
             </p>
           </div>
-        </motion.button>
+        </Button>
       )}
 
       {/* Feature Cards */}

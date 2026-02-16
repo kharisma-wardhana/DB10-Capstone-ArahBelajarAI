@@ -64,9 +64,7 @@ export default function InterviewPage() {
       })
       .catch((err) => {
         setError(
-          err instanceof Error
-            ? err.message
-            : "Gagal memulai sesi interview",
+          err instanceof Error ? err.message : "Gagal memulai sesi interview",
         );
       })
       .finally(() => setInitializing(false));
@@ -115,7 +113,7 @@ export default function InterviewPage() {
     <div className="min-h-screen bg-linear-to-br from-brand-gradient-start to-brand-gradient-end flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-10 pt-safe backdrop-blur-xl bg-brand-card border-b border-brand-card-border px-4 py-3">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
+        <div className="max-w-2xl mx-auto flex items-center justify-between pt-4">
           <div>
             <h2 className="text-brand-text font-semibold text-sm">
               Mock Interview
@@ -159,7 +157,11 @@ export default function InterviewPage() {
             <ChatMessage
               key={i}
               message={msg}
-              isStreaming={streaming && i === interview.messages.length - 1 && msg.role === "assistant"}
+              isStreaming={
+                streaming &&
+                i === interview.messages.length - 1 &&
+                msg.role === "assistant"
+              }
             />
           ))}
           <div ref={messagesEndRef} />

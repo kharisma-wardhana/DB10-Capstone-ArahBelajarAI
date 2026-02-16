@@ -21,7 +21,7 @@ export default function PekerjaanImpianPage() {
 
   return (
     <PageTransition>
-      <div className="space-y-6">
+      <div className="space-y-6 p-4 md:p-8 pb-safe">
         <div>
           <h2 className="text-brand-text text-2xl font-bold mb-1">
             Pekerjaan Impian
