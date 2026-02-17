@@ -7,8 +7,19 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
 });
 
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 const nextConfig: NextConfig = {
   turbopack: {},
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${BACKEND_URL}/api/:path*`,
+      },
+    ];
+  },
 };
 
 export default withPWA(nextConfig);
