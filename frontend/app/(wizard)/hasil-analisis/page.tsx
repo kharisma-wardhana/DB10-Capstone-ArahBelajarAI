@@ -1,18 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useWizardStore } from "@/shared/store/wizard-store";
 import { apiRequest } from "@/shared/api/client";
 import { API } from "@/shared/api/endpoints";
-import type { SkillGapResponse } from "@/shared/api/types";
+import type {
+  SkillDemandTrend,
+  SkillGapResponse,
+  RoadmapResponse,
+} from "@/shared/api/types";
 import { SkillRadarChart } from "@/features/skill-gap/components/radar-chart";
 import { ReadinessGauge } from "@/features/skill-gap/components/readiness-gauge";
 import { SkillCategoryCard } from "@/features/skill-gap/components/skill-category-card";
+import { SkillPriorityChart } from "@/features/skill-gap/components/skill-priority-chart";
+import { RoadmapTimeline } from "@/features/roadmap/components/roadmap-timeline";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { PageTransition } from "@/shared/components/layout/page-transition";
 import { AnimatedSkeleton } from "@/shared/components/ui/animated-skeleton";
 import { motion } from "framer-motion";
+import { Map } from "lucide-react";
 
 export default function HasilAnalisisPage() {
   const router = useRouter();
@@ -22,10 +35,17 @@ export default function HasilAnalisisPage() {
     gapResult,
     setGapResult,
     completeStep,
+    vakResult,
   } = useWizardStore();
 
   const [loading, setLoading] = useState(!gapResult);
   const [error, setError] = useState<string | null>(null);
+
+  // Roadmap state
+  const [roadmap, setRoadmap] = useState<RoadmapResponse | null>(null);
+  const [roadmapLoading, setRoadmapLoading] = useState(false);
+  const [roadmapError, setRoadmapError] = useState<string | null>(null);
+  const [roadmapOpen, setRoadmapOpen] = useState(false);
 
   useEffect(() => {
     if (gapResult || !selectedJobTitle || extractedSkills.length === 0) return;
@@ -57,6 +77,63 @@ export default function HasilAnalisisPage() {
     setGapResult,
     completeStep,
   ]);
+
+  // Build a lookup map: skill name (lowercase) → demand trend
+  const skillTrends = useMemo(() => {
+    if (!gapResult) return {};
+    const map: Record<string, SkillDemandTrend> = {};
+    for (const m of gapResult.matched_skills) {
+      if (m.demand_trend) {
+        map[m.required_skill.toLowerCase()] = m.demand_trend;
+      }
+    }
+    for (const m of gapResult.missing_skills) {
+      if (m.demand_trend) {
+        map[m.skill_name.toLowerCase()] = m.demand_trend;
+      }
+    }
+    return map;
+  }, [gapResult]);
+
+  // Generate roadmap handler
+  const generateRoadmap = useCallback(() => {
+    if (!gapResult || gapResult.missing_skills.length === 0) return;
+
+    // If already generated, just open the modal
+    if (roadmap) {
+      setRoadmapOpen(true);
+      return;
+    }
+
+    setRoadmapLoading(true);
+    setRoadmapError(null);
+
+    const missingSkills = gapResult.missing_skills.map((s) => ({
+      skill_name: s.skill_name,
+      category: s.category,
+      frequency: s.frequency,
+      priority_score: s.priority_score ?? s.frequency,
+    }));
+
+    apiRequest<RoadmapResponse>(API.ROADMAP_GENERATE, {
+      method: "POST",
+      body: JSON.stringify({
+        missing_skills: missingSkills,
+        vak_style: vakResult?.dominant ?? null,
+        job_title: gapResult.job_title_matched,
+      }),
+    })
+      .then((data) => {
+        setRoadmap(data);
+        setRoadmapOpen(true);
+      })
+      .catch((err) => {
+        setRoadmapError(
+          err instanceof Error ? err.message : "Gagal membuat roadmap",
+        );
+      })
+      .finally(() => setRoadmapLoading(false));
+  }, [gapResult, vakResult, roadmap]);
 
   if (loading) {
     return <AnimatedSkeleton blocks={["h-40", "h-72", "h-20", "h-20"]} />;
@@ -146,6 +223,9 @@ export default function HasilAnalisisPage() {
         {/* Radar Chart */}
         <SkillRadarChart categoryBreakdown={gapResult.category_breakdown} />
 
+        {/* SkillPulse: Priority Chart */}
+        <SkillPriorityChart missingSkills={gapResult.missing_skills} />
+
         {/* Category Breakdown */}
         <div>
           <h3 className="text-brand-text font-semibold text-sm mb-3">
@@ -158,10 +238,79 @@ export default function HasilAnalisisPage() {
                 categoryKey={key}
                 category={cat}
                 matchedSkills={matchedByCategory[key] || []}
+                skillTrends={skillTrends}
               />
             ))}
           </div>
         </div>
+
+        {/* Learning Roadmap Section */}
+        {gapResult.missing_skills.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Button
+              onClick={generateRoadmap}
+              disabled={roadmapLoading}
+              className="w-full bg-brand-primary text-white hover:bg-brand-primary/90 font-semibold cursor-pointer"
+            >
+              <Map className="w-4 h-4 mr-2" />
+              {roadmapLoading && "Membuat Roadmap..."}
+              {!roadmapLoading && roadmap && "Lihat Roadmap Belajar"}
+              {!roadmapLoading && !roadmap && "Buat Roadmap Belajar"}
+            </Button>
+            <p className="text-brand-text-muted text-xs text-center mt-2">
+              Rekomendasi kursus dari Coursera & Udemy berdasarkan gaya
+              belajar {vakResult?.dominant ? `(${vakResult.dominant})` : ""} kamu
+            </p>
+            {roadmapError && (
+              <div className="bg-red-500/20 border border-red-500/30 rounded-xl p-4 text-red-300 text-sm mt-2">
+                {roadmapError}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Roadmap Dialog */}
+        <Dialog open={roadmapOpen} onOpenChange={setRoadmapOpen}>
+          <DialogContent className="bg-brand-bg border-brand-card-border max-w-lg max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-brand-text">
+                Roadmap Belajar — {gapResult.job_title_matched}
+              </DialogTitle>
+            </DialogHeader>
+            {roadmap && (
+              <div className="space-y-4">
+                <div className="backdrop-blur-xl bg-brand-card border border-brand-card-border rounded-xl p-3">
+                  <div className="grid grid-cols-2 gap-3 text-center">
+                    <div>
+                      <div className="text-brand-primary-light text-lg font-bold">
+                        {roadmap.total_skills}
+                      </div>
+                      <div className="text-brand-text-muted text-xs">
+                        Skill Tercakup
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-brand-accent text-lg font-bold">
+                        {roadmap.total_courses}
+                      </div>
+                      <div className="text-brand-text-muted text-xs">
+                        Kursus Direkomendasikan
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <RoadmapTimeline
+                  phases={roadmap.phases}
+                  vakStyle={roadmap.vak_style}
+                />
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* Actions */}
         <div className="flex gap-3">

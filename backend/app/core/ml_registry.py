@@ -12,6 +12,8 @@ from ml.src.chromadb_manager import (
 )
 from ml.src.skill_extractor import SkillExtractor
 from ml.src.skill_gap_analyzer import SkillGapAnalyzer
+from app.services.skill_demand_service import SkillDemandService
+from app.services.learning_roadmap_service import LearningRoadmapService
 
 
 @dataclass
@@ -22,6 +24,8 @@ class MLRegistry:
     embedding_model: SentenceTransformer | None = None
     skill_extractor: SkillExtractor | None = None
     skill_gap_analyzer: SkillGapAnalyzer | None = None
+    skill_demand_service: SkillDemandService | None = None
+    learning_roadmap_service: LearningRoadmapService | None = None
 
     def initialize(self, chroma_host: str, chroma_port: int, model_name: str) -> None:
         """Load all models and initialize ChromaDB collections."""
@@ -41,6 +45,17 @@ class MLRegistry:
             chroma_client=self.chroma_client,
             model=self.embedding_model,
         )
+
+        # Load skill demand predictions (SkillPulse)
+        self.skill_demand_service = SkillDemandService()
+        self.skill_demand_service.load()
+
+        # Initialize learning roadmap service (course catalog)
+        self.learning_roadmap_service = LearningRoadmapService(
+            chroma_client=self.chroma_client,
+            model=self.embedding_model,
+        )
+        self.learning_roadmap_service.initialize()
 
 
 ml_registry = MLRegistry()

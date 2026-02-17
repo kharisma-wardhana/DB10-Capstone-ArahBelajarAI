@@ -90,9 +90,9 @@ export const useWizardStore = create<WizardStore>()(
       interview: { ...initialInterviewState },
 
       setVakResult: (result) => set({ vakResult: result }),
-      setSelectedJobTitle: (title) => set({ selectedJobTitle: title }),
+      setSelectedJobTitle: (title) => set({ selectedJobTitle: title, gapResult: null }),
       setRawSkillInput: (input) => set({ rawSkillInput: input }),
-      setExtractedSkills: (skills) => set({ extractedSkills: skills }),
+      setExtractedSkills: (skills) => set({ extractedSkills: skills, gapResult: null }),
       setGapResult: (result) => set({ gapResult: result }),
 
       setInterview: (state) =>

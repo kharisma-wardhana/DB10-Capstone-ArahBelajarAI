@@ -5,7 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { CategoryScore } from "@/shared/api/types";
+import type { CategoryScore, SkillDemandTrend } from "@/shared/api/types";
+import { TrendBadge } from "./trend-badge";
 
 const CATEGORY_LABELS: Record<string, string> = {
   tech_skills: "Keterampilan Teknis",
@@ -33,12 +34,15 @@ interface SkillCategoryCardProps {
   categoryKey: string;
   category: CategoryScore;
   matchedSkills: string[];
+  /** Map of skill name → demand trend data for displaying trend badges */
+  skillTrends?: Record<string, SkillDemandTrend>;
 }
 
 export function SkillCategoryCard({
   categoryKey,
   category,
   matchedSkills,
+  skillTrends = {},
 }: Readonly<SkillCategoryCardProps>) {
   const [expanded, setExpanded] = useState(false);
   const percentage = Math.round(category.coverage_pct * 100);
@@ -94,14 +98,18 @@ export function SkillCategoryCard({
                     Skill yang Dimiliki
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {matchedSkills.map((skill) => (
-                      <Badge
-                        key={skill}
-                        className="bg-brand-secondary/20 text-brand-secondary border-brand-secondary/30 text-xs"
-                      >
-                        {skill}
-                      </Badge>
-                    ))}
+                    {matchedSkills.map((skill) => {
+                      const trend = skillTrends[skill.toLowerCase()];
+                      return (
+                        <Badge
+                          key={skill}
+                          className="bg-brand-secondary/20 text-brand-secondary border-brand-secondary/30 text-xs inline-flex items-center gap-1"
+                        >
+                          {skill}
+                          {trend && <TrendBadge trend={trend} showLabel={false} />}
+                        </Badge>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -112,14 +120,18 @@ export function SkillCategoryCard({
                     Skill yang Perlu Dipelajari
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {category.missing.map((skill) => (
-                      <Badge
-                        key={skill}
-                        className="bg-red-500/20 text-red-300 border-red-500/30 text-xs"
-                      >
-                        {skill}
-                      </Badge>
-                    ))}
+                    {category.missing.map((skill) => {
+                      const trend = skillTrends[skill.toLowerCase()];
+                      return (
+                        <Badge
+                          key={skill}
+                          className="bg-red-500/20 text-red-300 border-red-500/30 text-xs inline-flex items-center gap-1"
+                        >
+                          {skill}
+                          {trend && <TrendBadge trend={trend} showLabel={false} />}
+                        </Badge>
+                      );
+                    })}
                   </div>
                 </div>
               )}

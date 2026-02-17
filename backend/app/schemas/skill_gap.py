@@ -1,5 +1,7 @@
 """Request/response schemas for skill gap analysis."""
 
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -17,12 +19,20 @@ class SkillGapRequest(BaseModel):
     )
 
 
+class SkillDemandTrend(BaseModel):
+    predicted_trend: str  # "stable" | "hot" | "declining"
+    confidence: float
+    growth_rate: float
+    current_demand: int
+
+
 class MatchedSkillResponse(BaseModel):
     user_skill: str
     required_skill: str
     category: str
     similarity: float
     frequency: float
+    demand_trend: Optional[SkillDemandTrend] = None
 
 
 class MissingSkillResponse(BaseModel):
@@ -30,6 +40,8 @@ class MissingSkillResponse(BaseModel):
     category: str
     frequency: float
     importance_rank: int
+    demand_trend: Optional[SkillDemandTrend] = None
+    priority_score: Optional[float] = None
 
 
 class CategoryScoreResponse(BaseModel):

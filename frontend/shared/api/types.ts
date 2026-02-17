@@ -33,12 +33,20 @@ export interface SkillGapRequest {
   job_title: string;
 }
 
+export interface SkillDemandTrend {
+  predicted_trend: "stable" | "hot" | "declining";
+  confidence: number;
+  growth_rate: number;
+  current_demand: number;
+}
+
 export interface MatchedSkill {
   user_skill: string;
   required_skill: string;
   category: string;
   similarity: number;
   frequency: number;
+  demand_trend?: SkillDemandTrend | null;
 }
 
 export interface MissingSkill {
@@ -46,6 +54,8 @@ export interface MissingSkill {
   category: string;
   frequency: number;
   importance_rank: number;
+  demand_trend?: SkillDemandTrend | null;
+  priority_score?: number | null;
 }
 
 export interface CategoryScore {
@@ -99,6 +109,42 @@ export interface InterviewFeedbackResponse {
     answer_quality: "good" | "average" | "needs_improvement";
     tip: string;
   }[];
+}
+
+// --- Learning Roadmap ---
+export interface CourseRecommendation {
+  title: string;
+  platform: "Coursera" | "Udemy";
+  url: string;
+  category: string;
+  level: string;
+  match_score: number;
+  subscribers: number;
+  reviews: number;
+  content_hours: number;
+}
+
+export interface RoadmapSkillItem {
+  skill_name: string;
+  category: string;
+  frequency: number;
+  priority_score: number;
+  courses: CourseRecommendation[];
+}
+
+export interface RoadmapPhase {
+  phase: number;
+  name: string;
+  description: string;
+  weeks: string;
+  skills: RoadmapSkillItem[];
+}
+
+export interface RoadmapResponse {
+  phases: RoadmapPhase[];
+  total_skills: number;
+  total_courses: number;
+  vak_style?: string | null;
 }
 
 // --- SSE Events ---

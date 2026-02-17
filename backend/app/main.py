@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.core.ml_registry import ml_registry
 from app.exceptions import register_exception_handlers
-from app.routers import health, interview, skill_extraction, skill_gap
+from app.routers import health, interview, roadmap, skill_extraction, skill_gap
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,7 @@ def create_app() -> FastAPI:
     app.include_router(skill_extraction.router, prefix=API_V1_PREFIX, tags=["Skills"])
     app.include_router(skill_gap.router, prefix=API_V1_PREFIX, tags=["Skills"])
     app.include_router(interview.router, prefix=API_V1_PREFIX, tags=["Interview"])
+    app.include_router(roadmap.router, prefix=API_V1_PREFIX, tags=["Roadmap"])
 
     return app
 

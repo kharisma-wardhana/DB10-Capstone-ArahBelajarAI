@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Command,
   CommandEmpty,
@@ -22,6 +22,18 @@ interface JobComboboxProps {
 export function JobCombobox({ selectedJob, onSelect }: Readonly<JobComboboxProps>) {
   const [allJobs, setAllJobs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -40,31 +52,37 @@ export function JobCombobox({ selectedJob, onSelect }: Readonly<JobComboboxProps
   }, []);
 
   return (
-    <div className="backdrop-blur-xl bg-brand-card border border-brand-card-border rounded-xl overflow-hidden">
+    <div ref={containerRef} className="backdrop-blur-xl bg-brand-card border border-brand-card-border rounded-xl overflow-hidden">
       <Command className="bg-transparent">
         <CommandInput
           placeholder={loading ? "Memuat daftar pekerjaan..." : "Cari pekerjaan lain..."}
           className="text-brand-text placeholder:text-brand-text-muted"
+          onFocus={() => setOpen(true)}
         />
-        <CommandList className="max-h-48">
-          <CommandEmpty className="text-brand-text-muted text-sm py-4 text-center">
-            Pekerjaan tidak ditemukan
-          </CommandEmpty>
-          <CommandGroup>
-            {allJobs.map((job) => (
-              <CommandItem
-                key={job}
-                value={job}
-                onSelect={() => onSelect(job)}
-                className={`cursor-pointer text-brand-text/80 ${
-                  selectedJob === job ? "bg-brand-card-hover text-brand-text" : ""
-                }`}
-              >
-                {job}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
+        {open && (
+          <CommandList className="max-h-48">
+            <CommandEmpty className="text-brand-text-muted text-sm py-4 text-center">
+              Pekerjaan tidak ditemukan
+            </CommandEmpty>
+            <CommandGroup>
+              {allJobs.map((job) => (
+                <CommandItem
+                  key={job}
+                  value={job}
+                  onSelect={() => {
+                    onSelect(job);
+                    setOpen(false);
+                  }}
+                  className={`cursor-pointer text-brand-text/80 ${
+                    selectedJob === job ? "bg-brand-card-hover text-brand-text" : ""
+                  }`}
+                >
+                  {job}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        )}
       </Command>
     </div>
   );

@@ -10,4 +10,5 @@ export const API = {
     `/api/v1/interview/${sessionId}/chat`,
   INTERVIEW_FEEDBACK: (sessionId: string) =>
     `/api/v1/interview/${sessionId}/feedback`,
+  ROADMAP_GENERATE: "/api/v1/roadmap/generate",
 } as const;
