@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type {
   ExtractedSkill,
+  MentorMode,
   SkillGapResponse,
 } from "@/shared/api/types";
 
@@ -25,6 +26,7 @@ interface InterviewState {
   messages: ChatMessage[];
   questionNumber: number;
   isComplete: boolean;
+  mode: MentorMode;
 }
 
 interface WizardStore {
@@ -50,11 +52,12 @@ interface WizardStore {
   gapResult: SkillGapResponse | null;
   setGapResult: (result: SkillGapResponse) => void;
 
-  // Interview
+  // Interview / MentorAI
   interview: InterviewState;
   setInterview: (state: Partial<InterviewState>) => void;
   appendMessage: (msg: ChatMessage) => void;
   updateLastAssistantMessage: (token: string) => void;
+  resetInterview: () => void;
 
   // Navigation
   goToStep: (step: number) => void;
@@ -63,6 +66,9 @@ interface WizardStore {
 
   // Progress
   hasProgress: () => boolean;
+
+  // Build wizard context for MentorAI
+  getWizardContext: () => Record<string, unknown>;
 
   // Reset
   resetAll: () => void;
@@ -74,6 +80,7 @@ const initialInterviewState: InterviewState = {
   messages: [],
   questionNumber: 0,
   isComplete: false,
+  mode: "interview",
 };
 
 export const useWizardStore = create<WizardStore>()(
@@ -112,6 +119,7 @@ export const useWizardStore = create<WizardStore>()(
           set({ interview: { ...get().interview, messages: msgs } });
         }
       },
+      resetInterview: () => set({ interview: { ...initialInterviewState } }),
 
       goToStep: (step) => set({ currentStep: step }),
       completeStep: (step) =>
@@ -125,6 +133,23 @@ export const useWizardStore = create<WizardStore>()(
       },
 
       hasProgress: () => get().completedSteps.length > 0,
+
+      getWizardContext: () => {
+        const s = get();
+        return {
+          vak_result: s.vakResult
+            ? { dominant: s.vakResult.dominant, scores: s.vakResult.scores }
+            : null,
+          gap_result: s.gapResult
+            ? {
+                overall_readiness_score: s.gapResult.overall_readiness_score,
+                matched_skills: s.gapResult.matched_skills,
+                missing_skills: s.gapResult.missing_skills,
+                category_breakdown: s.gapResult.category_breakdown,
+              }
+            : null,
+        };
+      },
 
       resetAll: () =>
         set({

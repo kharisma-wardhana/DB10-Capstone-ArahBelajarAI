@@ -35,10 +35,12 @@ export function ChatInput({
 
   return (
     <div className="border-t border-brand-card-border bg-brand-card/50 p-3">
-      <div className="text-brand-text-muted text-xs mb-2 text-center">
-        Pertanyaan {Math.min(questionNumber + 1, totalQuestions)} dari{" "}
-        {totalQuestions}
-      </div>
+      {totalQuestions > 0 && (
+        <div className="text-brand-text-muted text-xs mb-2 text-center">
+          Pertanyaan {Math.min(questionNumber + 1, totalQuestions)} dari{" "}
+          {totalQuestions}
+        </div>
+      )}
       <div className="flex gap-2">
         <textarea
           value={input}

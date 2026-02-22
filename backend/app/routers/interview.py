@@ -26,11 +26,14 @@ async def start_interview(
         job_role=request.job_role,
         user_skills=request.user_skills,
         language=request.language,
+        mode=request.mode,
+        wizard_context=request.wizard_context,
     )
     return APIResponse(data=InterviewStartResponse(
         session_id=session_id,
         job_role=request.job_role,
         first_question=first_question,
+        mode=request.mode,
     ))
 
 

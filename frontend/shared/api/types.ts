@@ -81,17 +81,22 @@ export interface JobTitleListResponse {
   total: number;
 }
 
-// --- Interview ---
+// --- Interview / MentorAI ---
+export type MentorMode = "interview" | "career_advice" | "learning_coach";
+
 export interface InterviewStartRequest {
   job_role: string;
   user_skills?: string[];
   language?: "id" | "en";
+  mode?: MentorMode;
+  wizard_context?: Record<string, unknown> | null;
 }
 
 export interface InterviewStartResponse {
   session_id: string;
   job_role: string;
   first_question: string;
+  mode: MentorMode;
 }
 
 export interface ChatMessageRequest {
@@ -157,6 +162,7 @@ export interface SSEDoneEvent {
   question_number: number;
   total_questions: number;
   is_complete: boolean;
+  mode?: MentorMode;
 }
 
 export type SSEEvent = SSETokenEvent | SSEDoneEvent;
