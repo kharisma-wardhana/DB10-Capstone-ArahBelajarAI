@@ -5,6 +5,7 @@ FROM node:20-alpine
 
 # Set environment variables
 ENV NODE_ENV=development
+ENV NEXT_PUBLIC_API_URL=http://be-arahbelajarai:8000
 
 WORKDIR /app
 
